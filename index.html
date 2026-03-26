@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CraviCanela — Sweet Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --wine:  #7d2535;
+      --wine2: #621d29;
+      --wine3: #4a1520;
+      --cream: #f2ead9;
+      --cream2:#e4d8c0;
+      --muted: rgba(242,234,217,0.55);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--wine);
+      color: var(--cream);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* vertical stripe texture */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: repeating-linear-gradient(
+        90deg, transparent 0px, transparent 30px,
+        rgba(0,0,0,0.04) 30px, rgba(0,0,0,0.04) 31px
+      );
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.3rem 5vw;
+      background: rgba(74,21,32,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(242,234,217,0.1);
+    }
+    .nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:700; color:var(--cream); }
+    nav ul { list-style:none; display:flex; gap:2.2rem; }
+    nav a { text-decoration:none; font-size:0.75rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); transition:color .25s; }
+    nav a:hover { color:var(--cream); }
+
+    /* ── HERO ── */
+    .hero {
+      position:relative; z-index:1;
+      min-height:100vh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center;
+      padding: 8rem 5vw 6rem;
+      gap: 1.8rem;
+    }
+
+    .eyebrow {
+      font-size:0.7rem; letter-spacing:0.24em; text-transform:uppercase;
+      color:var(--muted);
+      border:1px solid rgba(242,234,217,0.2);
+      padding:.38rem 1.1rem; border-radius:100px;
+      animation: fadeDown .8s ease both;
+    }
+
+    /* Stacked logo — Image 1 */
+    .hero-stacked { animation: fadeUp 1s ease .15s both; line-height:.92; }
+    .hero-stacked .word {
+      display:block;
+      font-family:'Cormorant Garamond',serif;
+      font-size: clamp(5rem,13vw,10rem);
+      font-weight:700; color:var(--cream);
+    }
+    .hero-sub {
+      font-size:.75rem; letter-spacing:.28em; text-transform:uppercase;
+      color:var(--muted); margin-top:.7rem;
+      animation: fadeUp 1s ease .3s both;
+    }
+
+    .hero-desc {
+      max-width:430px; font-size:1rem; line-height:1.82;
+      color:rgba(242,234,217,.68);
+      animation: fadeUp 1s ease .45s both;
+    }
+
+    .hero-btns { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; animation: fadeUp 1s ease .6s both; }
+
+    .btn {
+      display:inline-flex; align-items:center; gap:.5rem;
+      padding:.85rem 2rem; border-radius:100px;
+      font-size:.82rem; font-weight:500; letter-spacing:.06em;
+      text-decoration:none; cursor:pointer; border:none;
+      font-family:'Jost',sans-serif; transition:all .3s ease;
+    }
+    .btn-cream { background:var(--cream); color:var(--wine3); }
+    .btn-cream:hover { background:#fff; transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.25); }
+    .btn-outline { background:transparent; color:var(--cream); border:1.5px solid rgba(242,234,217,.35); }
+    .btn-outline:hover { border-color:var(--cream); transform:translateY(-2px); }
+
+    .scroll-hint {
+      position:absolute; bottom:2.5rem; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:.4rem;
+      color:var(--muted); font-size:.62rem; letter-spacing:.16em; text-transform:uppercase;
+      animation: fadeIn 1.5s ease 1s both;
+    }
+    .scroll-hint::after {
+      content:''; width:1px; height:36px;
+      background:linear-gradient(to bottom,rgba(242,234,217,.4),transparent);
+      animation:scrollLine 1.8s ease-in-out infinite;
+    }
+
+    /* ── STRIP ── */
+    .strip {
+      background:var(--wine3); overflow:hidden; white-space:nowrap;
+      padding:.85rem 0; position:relative; z-index:1;
+      border-top:1px solid rgba(242,234,217,.07);
+      border-bottom:1px solid rgba(242,234,217,.07);
+    }
+    .strip-track {
+      display:inline-flex; gap:3rem;
+      animation:marquee 22s linear infinite;
+      font-size:.72rem; letter-spacing:.18em; text-transform:uppercase;
+      color:rgba(242,234,217,.4);
+    }
+    .strip-track .dot { color:var(--cream2); }
+
+    /* ── SECTIONS ── */
+    section { padding:6rem 5vw; position:relative; z-index:1; }
+
+    .sec-eye { font-size:.7rem; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); margin-bottom:.8rem; }
+    .sec-title {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(2.2rem,4vw,3.5rem); font-weight:600; line-height:1.1;
+      color:var(--cream); margin-bottom:1rem;
+    }
+    .sec-title em { font-style:italic; font-weight:400; }
+    .sec-body { font-size:.95rem; line-height:1.8; color:rgba(242,234,217,.62); max-width:480px; }
+
+    /* ── FEATURES ── */
+    .features { background:var(--wine2); border-top:1px solid rgba(242,234,217,.07); border-bottom:1px solid rgba(242,234,217,.07); }
+    .feat-inner { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; }
+    .feat-list { display:flex; flex-direction:column; gap:2rem; margin-top:2.5rem; }
+    .feat-item { display:flex; gap:1.2rem; opacity:0; transform:translateX(-18px); transition:all .5s ease; }
+    .feat-item.vis { opacity:1; transform:none; }
+    .feat-icon {
+      width:46px; height:46px; border-radius:12px; flex-shrink:0;
+      background:rgba(242,234,217,.07); border:1px solid rgba(242,234,217,.12);
+      display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+    }
+    .feat-text h4 { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; margin-bottom:.3rem; color:var(--cream); }
+    .feat-text p  { font-size:.85rem; color:var(--muted); line-height:1.65; }
+
+    .feat-deco { display:flex; flex-direction:column; gap:1rem; }
+    .deco-box {
+      background:rgba(242,234,217,.05); border:1px solid rgba(242,234,217,.1);
+      border-radius:20px; padding:2rem; text-align:center;
+    }
+    .deco-box .big { font-size:4rem; display:block; margin-bottom:.6rem; line-height:1; }
+    .deco-box p { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.1rem; color:rgba(242,234,217,.65); }
+
+    /* ── CARDÁPIO ── */
+    #cardapio { background:var(--wine3); }
+
+    .tabs { display:flex; gap:.5rem; margin:2rem 0 3rem; flex-wrap:wrap; }
+    .tab-btn {
+      padding:.55rem 1.5rem; border-radius:100px;
+      font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+      cursor:pointer; border:1.5px solid rgba(242,234,217,.22);
+      background:transparent; color:var(--muted);
+      font-family:'Jost',sans-serif; transition:all .25s;
+    }
+    .tab-btn.on, .tab-btn:hover { background:var(--cream); color:var(--wine3); border-color:var(--cream); }
+
+    .menu-panel { display:none; }
+    .menu-panel.on { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+
+    .m-card {
+      background:rgba(242,234,217,.05); border:1px solid rgba(242,234,217,.1);
+      border-radius:20px; padding:2rem 1.6rem 1.8rem;
+      transition:all .35s ease;
+    }
+    .m-card:hover { background:rgba(242,234,217,.09); border-color:rgba(242,234,217,.25); transform:translateY(-5px); }
+    .m-card .emo { font-size:2.4rem; display:block; margin-bottom:1.1rem; }
+    .m-card h3 { font-family:'Cormorant Garamond',serif; font-size:1.25rem; font-weight:600; color:var(--cream); margin-bottom:.2rem; }
+    .m-card .ref-tag { font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:.8rem; }
+    .m-card hr { border:none; border-top:1px solid rgba(242,234,217,.1); margin-bottom:.9rem; }
+    .m-card p { font-size:.87rem; color:rgba(242,234,217,.62); line-height:1.65; margin-bottom:1.2rem; }
+    .m-card .lit { font-family:'Cormorant Garamond',serif; font-style:italic; font-size:.83rem; color:rgba(242,234,217,.38); }
+
+    .menu-note {
+      margin-top:2.5rem; padding:1.2rem 1.8rem;
+      border:1px solid rgba(242,234,217,.12); border-radius:14px;
+      font-size:.85rem; color:var(--muted);
+      display:flex; align-items:center; gap:.7rem; max-width:560px;
+    }
+
+    /* ── CTA — horizontal logo (Image 2) ── */
+    .cta { text-align:center; background:var(--wine2); border-top:1px solid rgba(242,234,217,.07); }
+    .cta-logo-h {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(2.8rem,6vw,5rem); font-weight:700;
+      color:var(--cream); display:block; margin-bottom:.3rem;
+    }
+    .cta-logo-sub {
+      font-size:.7rem; letter-spacing:.28em; text-transform:uppercase;
+      color:var(--muted); display:block; margin-bottom:2.8rem;
+    }
+    .cta .sec-title { margin:0 auto 1rem; max-width:560px; }
+    .cta .sec-body  { margin:0 auto 2.8rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      background:var(--wine3); border-top:1px solid rgba(242,234,217,.07);
+      padding:2rem 5vw; display:flex; justify-content:space-between;
+      align-items:center; flex-wrap:wrap; gap:1rem; position:relative; z-index:1;
+    }
+    footer .f-logo { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:700; color:rgba(242,234,217,.45); }
+    footer small { font-size:.72rem; color:rgba(242,234,217,.28); }
+    footer .socials { display:flex; gap:1.4rem; }
+    footer .socials a { font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(242,234,217,.32); text-decoration:none; transition:color .2s; }
+    footer .socials a:hover { color:var(--cream); }
+
+    /* ── KEYFRAMES ── */
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:none} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:none} }
+    @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+    @keyframes marquee  { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+    @keyframes scrollLine { 0%,100%{opacity:1;transform:scaleY(1)} 50%{opacity:.3;transform:scaleY(.4)} }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      .feat-inner{grid-template-columns:1fr;gap:3rem}
+      .feat-deco{display:none}
+      .menu-panel.on{grid-template-columns:1fr 1fr}
+      nav ul{display:none}
+    }
+    @media(max-width:480px){ .menu-panel.on{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">CraviCanela</div>
+  <ul>
+    <li><a href="#cardapio">Cardápio</a></li>
+    <li><a href="#sobre">Sobre</a></li>
+    <li><a href="#pedido">Pedido</a></li>
+  </ul>
+</nav>
+
+<!-- HERO — logo empilhada -->
+<section class="hero">
+  <div class="eyebrow">✦ Sweet Shop Artesanal</div>
+  <div class="hero-stacked">
+    <span class="word">Cravi</span>
+    <span class="word">Canela</span>
+  </div>
+  <div class="hero-sub">Sweet · Shop</div>
+  <p class="hero-desc">Doces feitos à mão com ingredientes selecionados e referências da literatura brasileira. Cada mordida conta uma história.</p>
+  <div class="hero-btns">
+    <a class="btn btn-cream" href="#cardapio">Ver Cardápio</a>
+    <a class="btn btn-outline" href="#pedido">Fazer Pedido</a>
+  </div>
+  <div class="scroll-hint">role</div>
+</section>
+
+<!-- STRIP -->
+<div class="strip">
+  <div class="strip-track">
+    <span class="dot">✦</span> Feito à mão &nbsp;
+    <span class="dot">✦</span> Ingredientes selecionados &nbsp;
+    <span class="dot">✦</span> Inspiração literária &nbsp;
+    <span class="dot">✦</span> Encomendas abertas &nbsp;
+    <span class="dot">✦</span> Entrega em casa &nbsp;
+    <span class="dot">✦</span> Feito à mão &nbsp;
+    <span class="dot">✦</span> Ingredientes selecionados &nbsp;
+    <span class="dot">✦</span> Inspiração literária &nbsp;
+    <span class="dot">✦</span> Encomendas abertas &nbsp;
+    <span class="dot">✦</span> Entrega em casa &nbsp;
+  </div>
+</div>
+
+<!-- DIFERENCIAIS -->
+<section id="sobre" class="features">
+  <div class="feat-inner">
+    <div>
+      <div class="sec-eye">Por que CraviCanela?</div>
+      <h2 class="sec-title">Tradição em cada <em>detalhe</em></h2>
+      <p class="sec-body">Cada receita carrega uma referência, uma história, uma memória. Sem pressa, sem atalhos.</p>
+      <div class="feat-list">
+        <div class="feat-item">
+          <div class="feat-icon">🌿</div>
+          <div class="feat-text"><h4>Ingredientes Naturais</h4><p>Sem corantes artificiais. Só ingredientes frescos do começo ao fim.</p></div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">👩‍🍳</div>
+          <div class="feat-text"><h4>Produção 100% Artesanal</h4><p>Cada peça feita à mão, com atenção em cada etapa do processo.</p></div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">📖</div>
+          <div class="feat-text"><h4>Inspiração Literária</h4><p>Sabores com nomes e referências da literatura brasileira. Doce e cultura juntos.</p></div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-icon">🎁</div>
+          <div class="feat-text"><h4>Embalagem para Presentear</h4><p>Elegante e pronta para dar de presente. Ideal para datas especiais.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="feat-deco">
+      <div class="deco-box"><span class="big">🧁</span><p>"Feito com amor e muita canela"</p></div>
+      <div class="deco-box" style="display:flex;gap:1rem;align-items:center;text-align:left">
+        <span style="font-size:2.5rem">📚</span>
+        <p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1rem;color:rgba(242,234,217,.65)">Cada sabor tem uma história por trás.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CARDÁPIO -->
+<section id="cardapio">
+  <div class="sec-eye">Nosso Cardápio</div>
+  <h2 class="sec-title">Escolha o seu <em>favorito</em></h2>
+  <p class="sec-body">Dois universos de sabor: caseirinhos de bolo e cookies artesanais. Cada um com nome literário e personalidade própria.</p>
+
+  <div class="tabs">
+    <button class="tab-btn on" onclick="switchTab('bolos',this)">🎂 Caseirinhos de Bolo</button>
+    <button class="tab-btn"   onclick="switchTab('cookies',this)">🍪 Cookies</button>
+  </div>
+
+  <div class="menu-panel on" id="t-bolos">
+    <div class="m-card">
+      <span class="emo">🎂</span>
+      <h3>Caseirinho Gabriela</h3>
+      <div class="ref-tag">Ref. Jorge Amado</div>
+      <hr/>
+      <p>Bolo amanteigado de canela, massa macia, com cobertura de caramelo salgado.</p>
+      <div class="lit">Gabriela — Jorge Amado</div>
+    </div>
+    <div class="m-card">
+      <span class="emo">🍮</span>
+      <h3>Caseirinho Margarida</h3>
+      <div class="ref-tag">Ref. Clarice Lispector</div>
+      <hr/>
+      <p>Bolo caseirinho de maracujá com cobertura de mousse de Ninho, perfume cítrico e equilíbrio entre o azedinho da fruta e a cremosidade do leite.</p>
+      <div class="lit">Uma Aprendizagem ou O Livro dos Prazeres — Clarice Lispector</div>
+    </div>
+    <div class="m-card">
+      <span class="emo">🍰</span>
+      <h3>Caseirinho Bertoleza</h3>
+      <div class="ref-tag">Ref. Clarice Lispector</div>
+      <hr/>
+      <p>Bolo de fubá com goiabada e queijo, clássico, afetivo e profundamente brasileiro.</p>
+      <div class="lit">Perto do Coração Selvagem — Clarice Lispector</div>
+    </div>
+  </div>
+
+  <div class="menu-panel" id="t-cookies">
+    <div class="m-card">
+      <span class="emo">🍪</span>
+      <h3>Cookie Capitu</h3>
+      <div class="ref-tag">Ref. Machado de Assis</div>
+      <hr/>
+      <p>Bolo amanteigado de canela, massa macia, com cobertura de caramelo salgado.</p>
+      <div class="lit">Gabriela — Jorge Amado</div>
+    </div>
+    <div class="m-card">
+      <span class="emo">🍫</span>
+      <h3>Cookie Aurélia</h3>
+      <div class="ref-tag">Ref. Clarice Lispector</div>
+      <hr/>
+      <p>Bolo caseirinho de maracujá com cobertura de mousse de Ninho, perfume cítrico e equilíbrio entre o azedinho da fruta e a cremosidade do leite.</p>
+      <div class="lit">Uma Aprendizagem ou O Livro dos Prazeres — Clarice Lispector</div>
+    </div>
+    <div class="m-card">
+      <span class="emo">❤️</span>
+      <h3>Cookie Rita Baiana</h3>
+      <div class="ref-tag">Ref. Clarice Lispector</div>
+      <hr/>
+      <p>Bolo de fubá com goiabada e queijo, clássico, afetivo e profundamente brasileiro.</p>
+      <div class="lit">Perto do Coração Selvagem — Clarice Lispector</div>
+    </div>
+  </div>
+
+  <div class="menu-note">
+    <span>📏</span> Cada caseirinho tem 8cm de diâmetro e serve no máximo duas pessoas.
+  </div>
+</section>
+
+<!-- CTA — logo horizontal -->
+<section id="pedido" class="cta">
+  <span class="cta-logo-h">CraviCanela</span>
+  <span class="cta-logo-sub">Sweet · Shop</span>
+  <h2 class="sec-title">Pronta para <em>adoçar</em> o seu dia?</h2>
+  <p class="sec-body">Entre em contato pelo WhatsApp para encomendas, orçamentos e dúvidas. Respondemos rapidinho! 🍂</p>
+  <a class="btn btn-cream" href="https://wa.me/5511999999999?text=Olá!%20Vim%20pelo%20site%20da%20CraviCanela%20e%20gostaria%20de%20fazer%20um%20pedido%20🍪" target="_blank">
+    💬 Chamar no WhatsApp
+  </a>
+</section>
+
+<footer>
+  <div class="f-logo">CraviCanela</div>
+  <small>© 2025 CraviCanela Sweet Shop · Todos os direitos reservados</small>
+  <div class="socials">
+    <a href="#">Instagram</a>
+    <a href="#">WhatsApp</a>
+  </div>
+</footer>
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('on'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+    document.getElementById('t-' + id).classList.add('on');
+    btn.classList.add('on');
+  }
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(()=>e.target.classList.add('vis'), i*130); });
+  }, {threshold:.15});
+  document.querySelectorAll('.feat-item').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
